@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mattis TAJAN - Etudiant en Cybersécurité</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-border {
+            position: relative;
+            background: linear-gradient(60deg, #00ffff, #ff00ff);
+            padding: 0.5px;
+        }
+
+        .gradient-border>div {
+            background: #111827;
+            height: 100%;
+        }
+
+        .cyber-grid {
+            background-image: radial-gradient(circle, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .nav-menu-mobile {
+            transition: all 0.3s ease-in-out;
+            transform: translateY(-1rem);
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .nav-menu-mobile.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-gray-100 cyber-grid">
+    <canvas id="bg-animation" class="fixed top-0 left-0 w-full h-full -z-10"></canvas>
+
+    <nav class="fixed top-0 w-full bg-black/80 backdrop-blur-lg z-50 border-b border-cyan-500/30">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <span class="text-2xl font-bold text-cyan-400">MT</span>
+
+
+                <button id="burgerBtn" class="lg:hidden text-gray-300 hover:text-cyan-400 transition" aria-label="Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="burger-icon w-6 h-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="close-icon w-6 h-6 hidden" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div class="hidden lg:flex space-x-6">
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition">À propos</a>
+                    <a href="#experience" class="text-gray-300 hover:text-cyan-400 transition">Expérience</a>
+                    <a href="#skills" class="text-gray-300 hover:text-cyan-400 transition">Compétences</a>
+                    <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition">Contact</a>
+                </div>
+
+                <div id="mobileMenu"
+                    class="nav-menu-mobile lg:hidden absolute top-full left-0 w-full bg-black/90 backdrop-blur-lg">
+                    <div class="flex flex-col space-y-4 p-6">
+                        <a href="#about" class="text-gray-300 hover:text-cyan-400 transition">À propos</a>
+                        <a href="#experience" class="text-gray-300 hover:text-cyan-400 transition">Expérience</a>
+                        <a href="#skills" class="text-gray-300 hover:text-cyan-400 transition">Compétences</a>
+                        <a href="#contact" class="text-gray-300 hover:text-cyan-400 transition">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <script>
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const burgerBtn = document.getElementById('burgerBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const burgerIcon = document.querySelector('.burger-icon');
+            const closeIcon = document.querySelector('.close-icon');
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                mobileMenu.classList.toggle('active');
+                burgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            }
+
+            burgerBtn.addEventListener('click', toggleMenu);
+
+            document.querySelectorAll('#mobileMenu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (isMenuOpen) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            document.addEventListener('click', (e) => {
+                if (isMenuOpen && !mobileMenu.contains(e.target) && !burgerBtn.contains(e.target)) {
+                    toggleMenu();
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024 && isMenuOpen) {
+                    toggleMenu();
+                }
+            });
+        });
+    </script>
+
+    <div class="container mx-auto px-6">
+        <header id="about" class="min-h-screen flex items-center pt-20">
+            <div class="container mx-auto flex flex-wrap lg:flex-nowrap items-center space-y-8 lg:space-y-0">
+                <div class="space-y-8 max-w-4xl lg:w-1/2">
+                    <div class="space-y-4">
+                        <h1 class="text-7xl font-bold opacity-0" id="name">
+                            <span class="text-cyan-400">Mattis</span>
+                            <span class="text-white">TAJAN</span>
+                        </h1>
+                        <h2 class="text-4xl text-gray-300 opacity-0" id="title">
+                            Etudiant en <span class="text-cyan-400"> Cybersécurité</span>
+                        </h2>
+                    </div>
+                    <p class="text-xl text-gray-400 opacity-0 leading-relaxed max-w-2xl pb-4" id="intro">
+                        Passionné de sécurité informatique et étudiant en 2e année de Bachelor à l'EPSI Toulouse,
+                        je combine créativité technique et expertise en cybersécurité pour protéger les systèmes
+                        numériques.
+                    </p>
+                    <a href="#contact" class="">
+                        <div class="flex space-x-6 opacity-0 " id="contact-info">
+                            <div class="gradient-border rounded-lg hover:scale-105 transition">
+                                <div class="px-6 py-3 rounded-lg ">
+                                    <span class="text-gray-300">Contactez moi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+
+
+
+            </div>
+        </header>
+
+        <section id="experience" class="py-32 opacity-0">
+            <h2 class="text-4xl font-bold text-cyan-400 mb-12">Expérience</h2>
+            <div class="space-y-8">
+                <div class="gradient-border rounded-xl md:hover:scale-105 transition">
+                    <div class="p-8 rounded-xl ">
+                        <h3 class="text-2xl font-bold text-white mb-4 ">Etude supérieur - EPSI</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                2e année de Bachelor en informatique
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                De nombreux projets réalisés durant ces 2 dernières années
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-border rounded-xl md:hover:scale-105 transition">
+                    <div class="p-8 rounded-xl ">
+                        <h3 class="text-2xl font-bold text-white mb-4 ">Stage cybersécurité - Orange</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Audits de sécurité d'applications web
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Développement du outil de génération automatique d'audits
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Expertise: BurpSuite, Kali Linux, Python, Tests d'intrusion
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="gradient-border rounded-xl md:hover:scale-105 transition">
+                    <div class="p-8 rounded-xl ">
+                        <h3 class="text-2xl font-bold text-white mb-4">Stage : Développeur web chez Alix&Co</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Réalisation d’un site web professionnel vitrine axés sur
+                                le design (Html, Tailwind CSS, JS)
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Dévelopement du SEO
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                <a target="_blank" href="https://la-specialiste-du-chat.fr/"
+                                    class="text-cyan-400 font-bold">Voir le
+                                    site</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-border rounded-xl md:hover:scale-105 transition">
+                    <div class="p-8 rounded-xl ">
+                        <h3 class="text-2xl font-bold text-white mb-4">Stage : Entreprise de réseaux
+                            et télécommunication à Pau (Ollink)
+                            2021</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Mise en place d’un réseau dans un festival
+                            </p>
+                            <p class="flex items-center">
+                                <span class="text-cyan-400 mr-2">►</span>
+                                Participation à la recherche et à la mise en place de
+                                solution a distance
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+
+        <section id="skills" class="py-32 opacity-0">
+            <h2 class="text-4xl font-bold text-cyan-400 mb-12">Compétences</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Cybersécurité</h3>
+                        <div class="space-y-4">
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">BurpSuite</span>
+                                    </div>
+                                    <div class="text-cyan-400">55%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:55%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Analyse Réseaux (wireshark...)</span>
+                                    </div>
+                                    <div class="text-cyan-400">45%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:45%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Utilisation de tools (Nmap, John, Hydra, Netcat,
+                                            Hashcat,
+                                            Gobuster...)</span>
+                                    </div>
+                                    <div class="text-cyan-400">55%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:55%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Reconnaissance (passive et active)</span>
+                                    </div>
+                                    <div class="text-cyan-400">50%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:50%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Exploitation de faille</span>
+                                    </div>
+                                    <div class="text-cyan-400">20%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:20%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Reverse shell</span>
+                                    </div>
+                                    <div class="text-cyan-400">40%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:40%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Elèvation de privilège</span>
+                                    </div>
+                                    <div class="text-cyan-400">35%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:35%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Autres compétences avec barres de progression... -->
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Programmation</h3>
+                        <div class="space-y-4">
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">HTML</span>
+                                    </div>
+                                    <div class="text-cyan-400">70%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:70%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Tailwind CSS</span>
+                                    </div>
+                                    <div class="text-cyan-400">80%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:80%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">JavaScript</span>
+                                    </div>
+                                    <div class="text-cyan-400">30%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:30%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Python</span>
+                                    </div>
+                                    <div class="text-cyan-400">60%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:60%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">PHP</span>
+                                    </div>
+                                    <div class="text-cyan-400">40%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:40%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">SQL</span>
+                                    </div>
+                                    <div class="text-cyan-400">40%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:40%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Systèmes d'exploitation</h3>
+                        <div class="space-y-4">
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Windows</span>
+                                    </div>
+                                    <div class="text-cyan-400">80%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:80%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">MacOS</span>
+                                    </div>
+                                    <div class="text-cyan-400">60%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:60%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Linux</span>
+                                    </div>
+                                    <div class="text-cyan-400">50%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:50%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Suite Adobe</h3>
+                        <div class="space-y-4">
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Photoshop</span>
+                                    </div>
+                                    <div class="text-cyan-400">85%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:85%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Illustrator</span>
+                                    </div>
+                                    <div class="text-cyan-400">35%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:35%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">After Effect</span>
+                                    </div>
+                                    <div class="text-cyan-400">30%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:30%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Logiciel</h3>
+                        <div class="space-y-4">
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Figma</span>
+                                    </div>
+                                    <div class="text-cyan-400">70%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:70%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Blender</span>
+                                    </div>
+                                    <div class="text-cyan-400">55%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:55%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Unreal Engine</span>
+                                    </div>
+                                    <div class="text-cyan-400">35%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:35%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Sketchup</span>
+                                    </div>
+                                    <div class="text-cyan-400">75%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:75%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl space-y-6 h-full">
+                        <h3 class="text-2xl font-bold text-white mb-6">Autre talent</h3>
+                        <div class="space-y-4">
+
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Faire le café (ne garantit pas le goût, seulement la
+                                            caféine)</span>
+                                    </div>
+                                    <div class="text-cyan-400">45%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:45%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Chercher la souris de l’ordi avec la souris
+                                            elle-même</span>
+                                    </div>
+                                    <div class="text-cyan-400">90%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:90%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Assembler un meuble IKEA sans regarder la
+                                            notice</span>
+                                    </div>
+                                    <div class="text-cyan-400">40%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:40%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="relative pt-1">
+                                <div class="flex mb-2 items-center justify-between">
+                                    <div>
+                                        <span class="text-gray-300">Taper "whoami" juste pour se rappeler qu’on est
+                                            root</span>
+                                    </div>
+                                    <div class="text-cyan-400">100%</div>
+                                </div>
+                                <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-gray-800">
+                                    <div style="width:100%"
+                                        class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan-400">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <h2 id="contact" class="text-4xl font-bold text-cyan-400 mb-12 glitch-effect">Contact</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="gradient-border rounded-xl">
+                <div class="p-8 rounded-xl bg-gray-900/50">
+                    <form class="space-y-6" action="https://formspree.io/f/mlddqkwk" method="POST">
+                        <div class="space-y-2">
+                            <label class="block text-gray-300">Nom</label>
+                            <div class="gradient-border rounded-lg">
+                                <input type="text" name="name"
+                                    class="w-full px-4 py-3 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-gray-100"
+                                    placeholder="Votre nom" required>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-gray-300">Email</label>
+                            <div class="gradient-border rounded-lg">
+                                <input type="email" name="email"
+                                    class="w-full px-4 py-3 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-gray-100"
+                                    placeholder="votre@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-gray-300">Message</label>
+                            <div class="gradient-border rounded-lg">
+                                <textarea name="message"
+                                    class="w-full px-4 py-3 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-gray-100 h-32 resize-none"
+                                    placeholder="Votre message..." required></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full gradient-border rounded-lg group transition-all duration-300">
+                            <div class="px-6 py-3 rounded-lg bg-gray-800 group-hover:bg-cyan-500/10">
+                                <span class="text-cyan-400 group-hover:text-white">Envoyer</span>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl bg-gray-900/50 space-y-6">
+                        <h3 class="text-2xl font-bold text-white mb-4">Coordonnées</h3>
+
+                        <div class="space-y-4">
+                            <a href="mailto:mattistajan@gmail.com"
+                                class="flex items-center space-x-4 text-gray-300 hover:text-cyan-400 transition group">
+                                <div
+                                    class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center group-hover:bg-cyan-500/10">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <span>mattistajan@gmail.com</span>
+                            </a>
+
+                            <div class="flex items-center space-x-4 text-gray-300">
+                                <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <span>Toulouse, France</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gradient-border rounded-xl">
+                    <div class="p-8 rounded-xl bg-gray-900/50">
+                        <h3 class="text-2xl font-bold text-white mb-6">Réseaux sociaux</h3>
+                        <div class="flex space-x-4">
+                            <a target="_blank" href="https://www.linkedin.com/in/mattis-tajan-abab962a1/"
+                                class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center hover:bg-cyan-500/10 transition group">
+                                <svg class="h-6 w-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                </svg>
+                            </a>
+                            <a target="_blank" href="https://github.com/mattistjnn"
+                                class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center hover:bg-cyan-500/10 transition group">
+                                <svg class="h-6 w-6 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="py-12 text-center text-gray-500">
+            <p>© 2024 Mattis TAJAN - Tous droits réservés</p>
+        </footer>
+    </div>
+
+    <script>
+        const sections = ["experience", "skills", "contact"];
+
+        sections.forEach(section => {
+            observer.observe(document.getElementById(section));
+        });
+
+    </script>
+</body>
+
+</html>
+</div>
+
+
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#bg-animation'),
+        alpha: true
+    });
+
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 8000;
+    const posArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+        posArray[i] = (Math.random() - 0.5) * 10;
+        posArray[i + 1] = (Math.random() - 0.5) * 10;
+        posArray[i + 2] = (Math.random() - 0.5) * 10;
+
+        colorArray[i] = Math.random() * 0.3 + 0.7;
+        colorArray[i + 1] = Math.random() * 0.3 + 0.7;
+        colorArray[i + 2] = 1;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.005,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8
+    });
+
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    camera.position.z = 3;
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX / window.innerWidth - 0.5;
+        mouseY = event.clientY / window.innerHeight - 0.5;
+    });
+
+    function animate() {
+        requestAnimationFrame(animate);
+
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += 0.0005;
+
+        particlesMesh.rotation.x += mouseY * 0.001;
+        particlesMesh.rotation.y += mouseX * 0.001;
+
+        renderer.render(scene, camera);
+    }
+
+    animate();
+
+    const timeline = gsap.timeline();
+
+    timeline
+        .to("#name", {
+            opacity: 1,
+            duration: 1,
+            y: -30,
+            ease: "power2.out"
+        })
+        .to("#title", {
+            opacity: 1,
+            duration: 1,
+            y: -30,
+            ease: "power2.out"
+        }, "-=0.5")
+        .to("#intro", {
+            opacity: 1,
+            duration: 1,
+            y: -30,
+            ease: "power2.out"
+        }, "-=0.5")
+        .to("#contact-info", {
+            opacity: 1,
+            duration: 1,
+            y: -30,
+            ease: "power2.out"
+        }, "-=0.5");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    gsap.to(entry.target, {
+                        opacity: 1,
+                        duration: 1,
+                        y: -30,
+                        ease: "power2.out"
+                    });
+                }
+            });
+        },
+        { threshold: 0.1 }
+    );
+
+    ["experience", "skills"].forEach(section => {
+        observer.observe(document.getElementById(section));
+    });
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+</body>
+
+</html>
